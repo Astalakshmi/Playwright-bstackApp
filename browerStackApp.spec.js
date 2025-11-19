@@ -1,0 +1,33 @@
+import { test, expect } from '@playwright/test';
+
+test('BrowserStackApp testCases', async ({ page }) => {
+  await page.goto('https://bstackdemo.com/');
+  await page.getByRole('link', { name: 'Sign In' }).click();
+  await page.getByText('Select Username').click();
+  await page.getByText('demouser', { exact: true }).click();
+  await page.getByText('Select Password').click();
+  await page.getByText('testingisfun99', { exact: true }).click();
+  await page.getByRole('button', { name: 'Log In' }).click();
+  await page.locator('[id="3"]').getByText('Add to cart').click();
+  await page.locator('[id="2"]').getByText('Add to cart').click();
+  await page.getByText('Checkout').click();
+  await page.getByRole('textbox', { name: 'First Name' }).click();
+  await page.getByRole('textbox', { name: 'First Name' }).fill('Dheek');
+  await page.getByRole('textbox', { name: 'First Name' }).press('Tab');
+  await page.getByRole('textbox', { name: 'Last Name' }).fill('Pal');
+  await page.getByRole('textbox', { name: 'Last Name' }).press('Tab');
+  await page.getByRole('textbox', { name: 'Address' }).fill('fair oaks');
+  await page.getByRole('textbox', { name: 'State/Province' }).click();
+  await page.getByRole('textbox', { name: 'State/Province' }).fill('ca');
+  await page.getByRole('textbox', { name: 'Postal Code' }).click();
+  await page.getByRole('textbox', { name: 'Postal Code' }).fill('94085');
+  await page.getByRole('button', { name: 'Submit' }).click();
+  await expect(page.locator('ol')).toContainText('Your Order has been successfully placed.');
+  await expect(page.locator('ol')).toContainText(/Your order number is \d+/);
+  await expect(page.locator('ol')).toContainText('Download order receipt');
+  const downloadPromise = page.waitForEvent('download');
+  await page.getByText('Download order receipt').click();
+  const download = await downloadPromise;
+  await page.getByRole('button', { name: 'Continue Shopping »' }).click();
+  await page.getByRole('link', { name: 'Logout' }).click();
+});
